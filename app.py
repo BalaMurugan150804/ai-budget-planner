@@ -301,8 +301,8 @@ with left:
                     df = get_expenses_by_month(now.year, now.month)
                     summary = df.groupby("category")["amount"].sum().to_string() if not df.empty else "No spend data yet"
                     st.session_state.coach_response = ask_coach_question(query, summary)
-                except Exception:
-                    st.session_state.coach_response = "Coach unavailable right now."
+                except Exception as e:
+                    st.session_state.coach_response = f"Error: {str(e)}"
 
         if st.session_state.get("coach_response") and st.session_state.get("last_query"):
             st.markdown(
