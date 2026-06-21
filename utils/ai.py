@@ -10,7 +10,7 @@ except Exception:
     api_key = os.getenv("GEMINI_API_KEY", "")
 
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel("gemini-2.0-flash")
+model = genai.GenerativeModel("gemini-1.5-flash-8b")
 
 def get_weekly_coach(df_summary: str, mood_pattern: str) -> str:
     """Generate a personalised weekly budget coaching message."""
