@@ -290,16 +290,28 @@ with left:
             label_visibility="collapsed",
             key="coach_query",
         )
-        if query:
-            st.markdown(f"""
-            <div class="coach-block" style="margin-top:0.6rem;">
-                <div class="coach-label">Coach Response</div>
-                <p>Processing: <em>{query}</em><br><br>
-                Start by isolating the relevant spend category in your dashboard. 
-                Pattern visibility is the first step before any behavioral adjustment. 
-                Return with the data and I will generate a targeted recommendation.</p>
-            </div>
-            """, unsafe_allow_html=True)
+        if query and query != st.session_state.get("last_query", ""):
+            st.session_state.last_query = query
+            with st.spinner("Coach is thinking..."):
+                try:
+                    from utils.ai import ask_coach_question
+                    from utils.db import get_expenses_by_month
+                    from datetime import datetime
+                    now = datetime.now()
+                    df = get_expenses_by_month(now.year, now.month)
+                    summary = df.groupby("category")["amount"].sum().to_string() if not df.empty else "No spend data yet"
+                    st.session_state.coach_response = ask_coach_question(query, summary)
+                except Exception:
+                    st.session_state.coach_response = "Coach unavailable right now."
+
+        if st.session_state.get("coach_response") and st.session_state.get("last_query"):
+            st.markdown(
+                '<div class="coach-block" style="margin-top:0.6rem;">'
+                '<div class="coach-label">Coach Response</div>'
+                '<p>' + str(st.session_state.get("coach_response", "")) + '</p>'
+                '</div>',
+                unsafe_allow_html=True,
+            )
 
 with right:
     st.markdown('<div class="section-label">Active Target</div>', unsafe_allow_html=True)

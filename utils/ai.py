@@ -78,3 +78,13 @@ Make it fun, energetic, and specific to their streak progress.
 """
     response = model.generate_content(prompt)
     return response.text
+def ask_coach_question(question: str, spending_summary: str) -> str:
+    prompt = f"""
+You are a smart, empathetic personal finance coach for an Indian user.
+Their current month spending summary: {spending_summary}
+The user is asking: "{question}"
+Give a direct, personalised answer in 3-5 sentences. Use their actual data.
+Be conversational and warm. Use Indian context. No bullet points. No emojis.
+"""
+    response = model.generate_content(prompt)
+    return response.text
