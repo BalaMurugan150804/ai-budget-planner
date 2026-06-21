@@ -2,6 +2,8 @@ import sqlite3
 import pandas as pd
 from datetime import datetime
 
+import os
+os.makedirs("data", exist_ok=True)
 DB_PATH = "data/budget.db"
 
 def init_db():
